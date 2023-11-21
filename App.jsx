@@ -4,9 +4,10 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
+import WinningScreen from './src/screens/WinningScreen';
 
 
-const App = () => {
+function App() {
 
   const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ const App = () => {
     <>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Winning" component={WinningScreen} />
       </Stack.Navigator>
     </>
   </NavigationContainer>

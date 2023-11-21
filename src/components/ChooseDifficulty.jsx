@@ -30,12 +30,6 @@ const ChooseDifficulty = ({onSelect, difficulty}) => {
                 </Text>
             </Pressable>
         </View>
-        <View style={styles.startContainer}>
-            <Image
-                source={require('../assets/image/start2.png')}
-                style={styles.startButton}
-            />
-        </View>
     </View>    
   )
 }
@@ -46,7 +40,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         marginTop: 20,
-        marginBottom: 20,
     },
     text: {
         fontSize: 25,
@@ -71,19 +64,7 @@ const styles = StyleSheet.create({
     },
     selected: {
         backgroundColor: '#EFC8A9',
-    },
-    startContainer: {
-        width: 250,
-        height: 110,
-        aspectRatio: 1,
-        marginTop: 20,
-    },
-    startButton: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
-    },
+    }
   });
 
 export default ChooseDifficulty
