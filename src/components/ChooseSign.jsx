@@ -13,13 +13,13 @@ const ChooseSign = () => {
         </Text>
         <Pressable onPress={()=>handleChooseSign("circle")}>
             <Image
-                source={require('../img/circle.png')}
+                source={require('../assets/image/circle.png')}
                 style={ styles.sign}
             />
         </Pressable>
         <Pressable onPress={()=>handleChooseSign("cross")}>
             <Image
-                source={require('../img/cross1.png')}
+                source={require('../assets/image/cross1.png')}
                 style={styles.sign} 
             />
         </Pressable>

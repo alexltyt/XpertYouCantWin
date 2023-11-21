@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ChooseSign from '../components/ChooseSign';
 import ChooseDifficulty from '../components/ChooseDifficulty';
 
-const App = () => {
+const HomeScreen = () => {
   const [difficulty, setDifficulty] = useState('xpert'); // ['normal', 'xpert']
 
   function handleSelect(difficulty){
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default HomeScreen;

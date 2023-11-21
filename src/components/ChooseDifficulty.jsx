@@ -32,7 +32,7 @@ const ChooseDifficulty = ({onSelect, difficulty}) => {
         </View>
         <View style={styles.startContainer}>
             <Image
-                source={require('../img/start2.png')}
+                source={require('../assets/image/start2.png')}
                 style={styles.startButton}
             />
         </View>
