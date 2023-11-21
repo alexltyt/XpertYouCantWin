@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet, Pressable, Alert } from 'react-native'
 
-const chooseSign = (sign) => {
+const handleChooseSign = (sign) => {
     Alert.alert(sign);
 };
 
@@ -11,13 +11,13 @@ const ChooseSign = () => {
         <Text style={styles.title}>
             Choose your sign
         </Text>
-        <Pressable onPress={()=>chooseSign("circle")}>
+        <Pressable onPress={()=>handleChooseSign("circle")}>
             <Image
                 source={require('../img/circle.png')}
                 style={ styles.sign}
             />
         </Pressable>
-        <Pressable onPress={()=>chooseSign("cross")}>
+        <Pressable onPress={()=>handleChooseSign("cross")}>
             <Image
                 source={require('../img/cross1.png')}
                 style={styles.sign} 
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: 40,
         marginBottom: 20,
     },
     title: {
