@@ -1,12 +1,16 @@
 import React from 'react'
 import { View, Text, Image, StyleSheet, Pressable, Alert } from 'react-native'
+import { useSign } from '../_util/SignContext';
 
-const handleChooseSign = (sign) => {
-    Alert.alert(sign);
-};
 
 const ChooseSign = () => {
-  return (
+    const { updateChosenSign } = useSign(); // Use useSign to access the context
+
+    const handleChooseSign = (sign) => {
+        updateChosenSign(sign); // Update the chosen sign using the context
+        console.log(sign);
+    };
+    return (
     <View style={styles.container}>
         <Text style={styles.title}>
             Choose your sign
