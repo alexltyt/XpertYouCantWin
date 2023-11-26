@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
 import { useSign } from '../_util/SignContext'; // Import useSign
+//import { checkWinner } from './gameLogic/CheckWinner';
+//import { bestMove } from './gameLogic/Minimax';
 
 const Board = ({ onRestart }) => {
   const [currentPlayer, setCurrentPlayer] = useState('Player'); // 'Player' or 'AI'
   const [drawCount, setDrawCount] = useState(0);
   const [cells, setCells] = useState(Array(9).fill(null));
-  const { chosenSign } = useSign(); 
+  const { chosenSign } = useSign();
 
   useEffect(() => {
     // Reset the cells when the reset key changes
@@ -23,45 +25,157 @@ const Board = ({ onRestart }) => {
 
       // Switch players
       setCurrentPlayer(currentPlayer === 'Player' ? 'AI' : 'Player');
+
+      // Check if there is a winner
+      const winner = checkWinner(newCells);
+      if (winner !== null) {
+        if (winner === 'draw') {
+          setDrawCount(drawCount + 1);
+        } else {
+          alert(`${winner} wins!`);
+        }
+        onRestart();
+      }
+      // AI's turn
+      bestMove(newCells);
+      setCurrentPlayer('Player');
     }
   };
+
+  const checkWinner = (cells) => {
+    let winner = null;
+
+    // Check rows
+    for (let i = 0; i < 9; i += 3) {
+      if (cells[i] !== null && cells[i] === cells[i + 1] && cells[i] === cells[i + 2]) {
+        winner = cells[i];
+      }
+    }
+
+    // Check columns
+    for (let i = 0; i < 3; i++) {
+      if (cells[i] !== null && cells[i] === cells[i + 3] && cells[i] === cells[i + 6]) {
+        winner = cells[i];
+      }
+    }
+
+    // Check diagonals
+    if (cells[0] !== null && cells[0] === cells[4] && cells[0] === cells[8]) {
+      winner = cells[0];
+    }
+
+    if (cells[2] !== null && cells[2] === cells[4] && cells[2] === cells[6]) {
+      winner = cells[2];
+    }
+
+    // Check draw
+    if (!cells.includes(null) && winner === null) {
+      return "draw";
+    }
+
+    return winner;
+
+  }
+
+  let scores = {
+    'AI': 10,
+    'Player': -10,
+    "draw": -5
+  };
+
+  function bestMove(board) {
+    let bestScore = -Infinity;
+    let move;
+    for (let i = 0; i < 9; i++) {
+      if (board[i] === null) {
+        board[i] = 'AI';
+        let score = minimax(board, 0, false);
+        board[i] = null;
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
+      }
+    }
+    board[move] = 'AI';
+    const winner = checkWinner(cells);
+    if (winner !== null) {
+      if (winner === 'draw') {
+        setDrawCount(drawCount + 1);
+      } else {
+        alert(`${winner} wins!`);
+      }
+      onRestart();
+    }
+  }
+
+  function minimax(board, depth, isMaximizing) {
+    let result = checkWinner(board);
+    if (result !== null) {
+      return scores[result];
+    }
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = 'AI';
+          let score = minimax(board, depth + 1, false);
+          board[i] = null;
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === null) {
+          board[i] = 'Player';
+          let score = minimax(board, depth + 1, true);
+          board[i] = null;
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
+    }
+  }
 
   const renderCell = (index) => {
     const cellValue = cells[index];
     let cellContent = null;
 
     if (cellValue === 'Player') {
-        if (chosenSign === 'circle') {
-            cellContent = (
-                <Image
-                    source={require('../assets/image/circle.png')}
-                    style={styles.sign}
-                />
-            );
-        }else{
-            cellContent = (
-                <Image
-                    source={require('../assets/image/cross1.png')}
-                    style={styles.sign}
-                />
-            );
-        }
+      if (chosenSign === 'circle') {
+        cellContent = (
+          <Image
+            source={require('../assets/image/circle.png')}
+            style={styles.sign}
+          />
+        );
+      } else {
+        cellContent = (
+          <Image
+            source={require('../assets/image/cross1.png')}
+            style={styles.sign}
+          />
+        );
+      }
     } else if (cellValue === 'AI') {
-        if (chosenSign === 'circle') {
-            cellContent = (
-                <Image
-                    source={require('../assets/image/cross1.png')}
-                    style={styles.sign}
-                />
-            );
-        } else {
-            cellContent = (
-                <Image
-                    source={require('../assets/image/circle.png')}
-                    style={styles.sign}
-                />
-            );
-        };
+      if (chosenSign === 'circle') {
+        cellContent = (
+          <Image
+            source={require('../assets/image/cross1.png')}
+            style={styles.sign}
+          />
+        );
+      } else {
+        cellContent = (
+          <Image
+            source={require('../assets/image/circle.png')}
+            style={styles.sign}
+          />
+        );
+      };
     }
 
     return (
