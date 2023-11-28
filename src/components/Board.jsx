@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
+import { StyleSheet, View, Text, Image, Pressable, Alert } from 'react-native';
 import { useSign } from '../_util/SignContext'; // Import useSign
 //import { checkWinner } from './gameLogic/CheckWinner';
 //import { bestMove } from './gameLogic/Minimax';
@@ -9,35 +9,49 @@ const Board = ({ onRestart }) => {
   const [drawCount, setDrawCount] = useState(0);
   const [cells, setCells] = useState(Array(9).fill(null));
   const { chosenSign } = useSign();
+  const [gameOver, setGameOver] = useState(false);
+
+  //temp const set here
+  // difficulty = 'normal' or 'xpert';
+  const difficulty = 'normal';
 
   useEffect(() => {
     // Reset the cells when the reset key changes
     setCells(Array(9).fill(null));
+    setGameOver(false);
   }, [onRestart]);
 
+  const handlePostMoveLogic = (newCells) => {
+    // Check if there is a winner
+    const winner = checkWinner(newCells);
+    if (winner !== null && !gameOver) {
+      setGameOver(true); // Set game over state
+      if (winner === 'draw') {
+        const newDrawCount = drawCount + 1;
+        setDrawCount(newDrawCount);
+        Alert.alert("Game Over", `Draw!`, [{ text: "OK", onPress: () => onRestart() }]);
+      } else {
+        Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart() }]);
+      }
+    }
+  };
 
   const handleCellClick = (index) => {
     // Check if the cell is already occupied
-    if (cells[index] === null) {
+    if (cells[index] === null && !gameOver) {
       const newCells = [...cells];
       newCells[index] = currentPlayer;
       setCells(newCells);
 
-      // Switch players
-      setCurrentPlayer(currentPlayer === 'Player' ? 'AI' : 'Player');
+      handlePostMoveLogic(newCells); // Check for winner after player's move
 
-      // Check if there is a winner
-      const winner = checkWinner(newCells);
-      if (winner !== null) {
-        if (winner === 'draw') {
-          setDrawCount(drawCount + 1);
-        } else {
-          alert(`${winner} wins!`);
-        }
-        onRestart();
+      if (!gameOver) {
+        // AI's turn
+        const updatedCells = bestMove(newCells); // Get updated cells after AI's move
+        setCells(updatedCells);
+        handlePostMoveLogic(updatedCells); // Check for winner after AI's move
       }
-      // AI's turn
-      bestMove(newCells);
+
       setCurrentPlayer('Player');
     }
   };
@@ -77,11 +91,21 @@ const Board = ({ onRestart }) => {
 
   }
 
-  let scores = {
-    'AI': 10,
-    'Player': -10,
-    "draw": -5
-  };
+  if (difficulty === 'xpert') {
+    scores = {
+      'AI': 10,
+      'Player': -10,
+      "draw": -5
+    };
+  }
+
+  if (difficulty === 'normal') {
+    scores = {
+      "AI": (Math.random() * 10) - 5,
+      'Player': -3,
+      "draw": -2
+    };
+  }
 
   function bestMove(board) {
     let bestScore = -Infinity;
@@ -98,15 +122,8 @@ const Board = ({ onRestart }) => {
       }
     }
     board[move] = 'AI';
-    const winner = checkWinner(cells);
-    if (winner !== null) {
-      if (winner === 'draw') {
-        setDrawCount(drawCount + 1);
-      } else {
-        alert(`${winner} wins!`);
-      }
-      onRestart();
-    }
+    handlePostMoveLogic(board);
+
   }
 
   function minimax(board, depth, isMaximizing) {
