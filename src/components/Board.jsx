@@ -27,8 +27,7 @@ const Board = ({ onRestart }) => {
     if (winner !== null && !gameOver) {
       setGameOver(true); // Set game over state
       if (winner === 'draw') {
-        const newDrawCount = drawCount + 1;
-        setDrawCount(newDrawCount);
+        setDrawCount(drawCount + 1);
         Alert.alert("Game Over", `Draw!`, [{ text: "OK", onPress: () => onRestart() }]);
       } else {
         Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart() }]);
@@ -46,10 +45,8 @@ const Board = ({ onRestart }) => {
       handlePostMoveLogic(newCells); // Check for winner after player's move
 
       if (!gameOver) {
-        // AI's turn
-        const updatedCells = bestMove(newCells); // Get updated cells after AI's move
-        setCells(updatedCells);
-        handlePostMoveLogic(updatedCells); // Check for winner after AI's move
+        bestMove(newCells); // AI's turn
+        handlePostMoveLogic(newCells); // Check for winner after AI's move
       }
 
       setCurrentPlayer('Player');
@@ -123,7 +120,6 @@ const Board = ({ onRestart }) => {
     }
     board[move] = 'AI';
     handlePostMoveLogic(board);
-
   }
 
   function minimax(board, depth, isMaximizing) {
