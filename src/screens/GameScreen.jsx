@@ -1,78 +1,108 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, Pressable , ImageBackground} from 'react-native';
+import { StyleSheet, View, Text, Image, ImageBackground, TouchableHighlight } from 'react-native';
 import { useState } from 'react';
 import Board from '../components/Board';
 import PlayerContainer from '../components/PlayerContainer';
 
-function GameScreen({navigation}){
-    const [resetKey, setResetKey] = useState(0);
+const GameScreen = ({ navigation }) => {
+  const [resetKey, setResetKey] = useState(0);
+  const [playerWin, setPlayerWin] = useState(0);
+  const [aiWin, setAiWin] = useState(0);
+  const [drawCount, setDrawCount] = useState(0);
 
-    // Function to reset the cells
-    const handleRestart = () => {
-    // Increment the resetKey to force a re-render of the Board component
-         setResetKey((prevKey) => prevKey + 1);
-    };
-    return (
-        <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
-        <View style={styles.bg}>
-            <PlayerContainer playerWin="5" aiWin="10"/>
-            <Board key={resetKey} onRestart={handleRestart}/>
-            <View style={styles.buttonContainer}>
-                <Pressable style={styles.buttonSize} onPress={handleRestart}>
-                    <Image
-                        source={require('../assets/image/restart.png')}
-                        style={styles.button}
-                    />
-                </Pressable>
-                <Pressable style={styles.buttonSize} onPress={()=>navigation.navigate('Winning')}>
-                    <Image
-                        source={require('../assets/image/cross1.png')}
-                        style={styles.button}
-                    />
-                </Pressable>
-                <Pressable style={styles.buttonSize} onPress={()=>navigation.navigate('Home')}>
-                    <Image
-                        source={require('../assets/image/home.png')}
-                        style={styles.button}
-                    />
-                </Pressable>
-            </View>
+  const handleRestart = (winner) => {
+    setResetKey((prevKey) => prevKey + 1);
+
+    // Update win count based on the winner
+    if (winner === 'Player') {
+      setPlayerWin(playerWin + 1);
+    } else if (winner === 'AI') {
+      setAiWin(aiWin + 1);
+    } else if (winner === 'draw') {
+      setDrawCount(drawCount + 1);
+    }
+    
+  };
+
+
+  return (
+    <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
+      <View style={styles.bg}>
+        <PlayerContainer playerWin={playerWin} aiWin={aiWin} />
+        <Board key={resetKey} onRestart={(winner) => handleRestart(winner)} drawCount={drawCount} />
+        <View style={styles.buttonContainer}>
+          <TouchableHighlight
+            style={styles.buttonSize}
+            onPress={() => handleRestart()}
+            underlayColor="rgba(0, 0, 0, 0.1)" // Color when button is pressed
+          >
+            <Image source={require('../assets/image/restart.png')} style={styles.button} />
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.buttonSize}
+            onPress={() => navigation.navigate('Winning')}
+            underlayColor="rgba(0, 0, 0, 0.1)"
+          >
+            <Image source={require('../assets/image/cross1.png')} style={styles.button} />
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.buttonSize}
+            onPress={() => navigation.navigate('Home')}
+            underlayColor="rgba(0, 0, 0, 0.1)"
+          >
+            <Image source={require('../assets/image/home.png')} style={styles.button} />
+          </TouchableHighlight>
         </View>
-        </ImageBackground>
-    )
-}
+        <View style={styles.buttonContainer}>
+          {/* Add a new button to reset stats */}
+          <TouchableHighlight
+            style={styles.buttonSize}
+            onPress={() => handleResetStats()}
+            underlayColor="rgba(0, 0, 0, 0.1)"
+          >
+            <Text style={styles.buttonText}>Reset Stats</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+    </ImageBackground>
+  );
+};
 
 const styles = StyleSheet.create({
-    wall: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-      },
-    bg: {
-        height: '100%',
-        backgroundColor: 'rgba(250, 243, 223, 0.552)',
-        alignItems: 'center',
-      },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        gap: 60,
-    },
-    buttonSize: {
-        width: 60,
-        height: 60,
-        aspectRatio: 1,
-        marginTop: 20,
-    },
-    button: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
-    },
+  wall: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  bg: {
+    height: '100%',
+    backgroundColor: 'rgba(250, 243, 223, 0.552)',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    gap: 60,
+  },
+  buttonSize: {
+    width: 60,
+    height: 60,
+    aspectRatio: 1,
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  buttonText: {
+    fontSize: 16,
+    color: 'black',
+  },
 });
 
+export default GameScreen;
 
-export default GameScreen
