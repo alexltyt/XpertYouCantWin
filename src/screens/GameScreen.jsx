@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     gap: wp('15%'),
-    marginTop: hp('3%'),
+    // marginTop: hp('3%'),
   },
   buttonSize: {
     width: 60,

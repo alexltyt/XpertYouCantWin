@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         width: 90,
         height: 90,
         aspectRatio: 1,
-        marginTop: hp('2%'),
+        // marginTop: hp('2%'),
     },
     button: {
         flex: 1,
