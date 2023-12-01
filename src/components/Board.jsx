@@ -4,9 +4,8 @@ import { useSign } from '../_util/SignContext'; // Import useSign
 //import { checkWinner } from './gameLogic/CheckWinner';
 //import { bestMove } from './gameLogic/Minimax';
 
-const Board = ({ onRestart }) => {
+const Board = ({ onRestart, drawCount}) => {
   const [currentPlayer, setCurrentPlayer] = useState('Player'); // 'Player' or 'AI'
-  const [drawCount, setDrawCount] = useState(0);
   const [cells, setCells] = useState(Array(9).fill(null));
   const { chosenSign } = useSign();
   const [gameOver, setGameOver] = useState(false);
@@ -26,11 +25,11 @@ const Board = ({ onRestart }) => {
     const winner = checkWinner(newCells);
     if (winner !== null && !gameOver) {
       setGameOver(true); // Set game over state
+
       if (winner === 'draw') {
-        setDrawCount(drawCount + 1);
-        Alert.alert("Game Over", `Draw!`, [{ text: "OK", onPress: () => onRestart() }]);
+        Alert.alert("Game Over", `Draw!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
       } else {
-        Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart() }]);
+        Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
       }
     }
   };
@@ -46,8 +45,9 @@ const Board = ({ onRestart }) => {
 
       if (!gameOver) {
         bestMove(newCells); // AI's turn
-        handlePostMoveLogic(newCells); // Check for winner after AI's move
       }
+      
+      handlePostMoveLogic(newCells); // Check for winner after AI's move
 
       setCurrentPlayer('Player');
     }
