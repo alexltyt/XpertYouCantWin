@@ -12,8 +12,13 @@ const GameScreen = ({ navigation }) => {
   const [playerWin, setPlayerWin] = useState(0);
   const [aiWin, setAiWin] = useState(0);
   const [drawCount, setDrawCount] = useState(0);
+  const [timeCount, setTimeCount] = useState(0);
+  const [finalWinner, setFinalWinner] = useState('');
 
   const clickSound = useRef(null);
+  const startTime = useRef(null);
+  const endTime = useRef(null);
+
 
 
   const handleRestart = (winner) => {
@@ -35,7 +40,18 @@ const GameScreen = ({ navigation }) => {
     } else if (winner === 'draw') {
       setDrawCount(drawCount + 1);
     }
-    
+
+  };
+
+  const formatTime = (milliseconds) => {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+
+    return `${formattedMinutes}:${formattedSeconds}`;
   };
 
   useEffect(() => {
@@ -45,6 +61,7 @@ const GameScreen = ({ navigation }) => {
         console.log('Failed to load the sound', error);
         return;
       }
+      startTime.current = new Date();
       // loaded successfully
       // console.log('Duration in seconds: ' + clickSound.current.getDuration());
       // set volume
@@ -54,19 +71,45 @@ const GameScreen = ({ navigation }) => {
     return () => {
       clickSound.current.release(); // Release the sound on component unmount
     };
-  },[]);
+  }, []);
 
   const handlePress = (destination) => {
     // Play the click sound
     clickSound.current.play((success) => {
-        if (!success) {
-            console.log('Sound did not play correctly');
-        }
+      if (!success) {
+        console.log('Sound did not play correctly');
+      }
     });
 
-    navigation.navigate(destination);
-}
+    if (destination === 'Winning') {
+      endTime.current = new Date();
+      const timeDifferent = endTime.current - startTime.current;
+      setTimeCount(formatTime(timeDifferent));
+      if (playerWin > aiWin) {
+        setFinalWinner('Player');
+      } else if (playerWin < aiWin) {
+        setFinalWinner('AI');
+      } else {
+        setFinalWinner('draw');
+      }
+    }
 
+    navigation.navigate(destination);
+  }
+
+  // this is the function to print the time count in log to test
+  useEffect(() => {
+    if (timeCount) {
+      console.log(`Time spent on the GameScreen is now updated to: ${timeCount}`);
+    }
+  }, [timeCount]);
+
+  // this is the function to print the final winner in log to test
+  useEffect(() => {
+    if (finalWinner) {
+      console.log(`The final winner is: ${finalWinner}`);
+    }
+  }, [finalWinner]);
 
   return (
     <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
@@ -97,8 +140,8 @@ const GameScreen = ({ navigation }) => {
           </TouchableHighlight>
         </View>
         {/* <View style={styles.buttonContainer}> */}
-          {/* Add a new button to reset stats */}
-          {/* <TouchableHighlight
+        {/* Add a new button to reset stats */}
+        {/* <TouchableHighlight
             style={styles.buttonSize}
             onPress={() => handleResetStats()}
             underlayColor="rgba(0, 0, 0, 0.1)"
