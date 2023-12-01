@@ -1,13 +1,18 @@
 import React from 'react'
-import { StyleSheet, View, Text, Image, Pressable , ImageBackground} from 'react-native';
+import { StyleSheet, View, Text, Image, Pressable, ImageBackground } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import Sound from 'react-native-sound';
 import GameResult from '../components/GameResult';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
-const WinningScreen = ({navigation}) => {
+const WinningScreen = ({ navigation }) => {
     const clickSound = useRef(null);
+
+    //temp params
+    const drawCount = 3;
+    const winner = 'circle';
+    const timeCount = '15:05';
 
     useEffect(() => {
         // Initialize sound
@@ -25,7 +30,7 @@ const WinningScreen = ({navigation}) => {
         return () => {
             clickSound.current.release(); // Release the sound on component unmount
         };
-    },[]);
+    }, []);
 
     const handlePress = (destination) => {
         // Play the click sound
@@ -37,28 +42,28 @@ const WinningScreen = ({navigation}) => {
 
         navigation.navigate(destination);
     }
-  return (
-    <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
+    return (
+        <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
 
-    <View style={styles.bg}>
-        <GameResult draw="5" timeUsed="14:05" winner="circle"/>
-        <View style={styles.buttonContainer}>
-            <Pressable style={styles.buttonSize} onPress={()=>handlePress('Game')}>
-                <Image
-                    source={require('../assets/image/restart.png')}
-                    style={styles.button}
-                />
-            </Pressable>
-            <Pressable style={styles.buttonSize} onPress={()=>handlePress('Home')}>
-                <Image
-                    source={require('../assets/image/home.png')}
-                    style={styles.button}
-                />
-            </Pressable>
-        </View>
-    </View>
-    </ImageBackground>
-  )
+            <View style={styles.bg}>
+                <GameResult draw={drawCount} timeUsed={timeCount} winner={winner} />
+                <View style={styles.buttonContainer}>
+                    <Pressable style={styles.buttonSize} onPress={() => handlePress('Game')}>
+                        <Image
+                            source={require('../assets/image/restart.png')}
+                            style={styles.button}
+                        />
+                    </Pressable>
+                    <Pressable style={styles.buttonSize} onPress={() => handlePress('Home')}>
+                        <Image
+                            source={require('../assets/image/home.png')}
+                            style={styles.button}
+                        />
+                    </Pressable>
+                </View>
+            </View>
+        </ImageBackground>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -67,11 +72,11 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         justifyContent: 'center',
-      },
+    },
     bg: {
         height: '100%',
         backgroundColor: 'rgba(250, 243, 223, 0.552)',
-      },
+    },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
