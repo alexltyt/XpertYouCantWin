@@ -9,6 +9,7 @@ import Sound from 'react-native-sound';
 const Board = ({ onRestart, drawCount}) => {
   const [cells, setCells] = useState(Array(9).fill(null));
   const { chosenSign, chosenDifficulty } = useSign();
+  const [currentPlayer, setCurrentPlayer] = useState('Player');
   const [gameOver, setGameOver] = useState(false);
 
   // useRef to keep the sound object
