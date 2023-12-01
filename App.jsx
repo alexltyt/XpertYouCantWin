@@ -8,10 +8,11 @@ import GameScreen from './src/screens/GameScreen';
 import { SignProvider } from './src/_util/SignContext'; // Import the SignProvider
 import { useState, useRef, useEffect } from 'react';
 import Sound from 'react-native-sound';
+import Orientation from 'react-native-orientation-locker';
 
 function App() {
   const Stack = createStackNavigator();
- 
+
   const backgroundMusic = useRef(null);
 
   useEffect(() => {
@@ -32,11 +33,19 @@ function App() {
     return () => {
       backgroundMusic.current.release(); // Release the sound on component unmount
     };
-  },[]);
+  }, []);
+
+  useEffect(() => {
+    Orientation.lockToPortrait();
+
+    return () => {
+      Orientation.unlockAllOrientations();
+    };
+  }, []);
 
   return (
     <NavigationContainer>
-      <SignProvider> 
+      <SignProvider>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Winning" component={WinningScreen} />
