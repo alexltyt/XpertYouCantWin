@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, Alert } from 'react-native';
 import { useSign } from '../_util/SignContext'; // Import useSign
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import Sound from 'react-native-sound';
 //import { checkWinner } from './gameLogic/CheckWinner';
 //import { bestMove } from './gameLogic/Minimax';
 
@@ -11,6 +11,9 @@ const Board = ({ onRestart, drawCount}) => {
   const [cells, setCells] = useState(Array(9).fill(null));
   const { chosenSign } = useSign();
   const [gameOver, setGameOver] = useState(false);
+
+  // useRef to keep the sound object
+  const clickSound = useRef(null);
 
   //temp const set here
   // difficulty = 'normal' or 'xpert';
@@ -22,6 +25,62 @@ const Board = ({ onRestart, drawCount}) => {
     setGameOver(false);
   }, [onRestart]);
 
+  useEffect(() => {
+    // Initialize sound
+    clickSound.current = new Sound(require('../assets/sound/pick2.mp3'), (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+      // set volume
+      clickSound.current.setVolume(1.0);
+    });
+
+    winSound = new Sound(require('../assets/sound/player_win.mp3'), (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+      // set volume
+      winSound.setVolume(1.0);
+    });
+
+    drawSound = new Sound(require('../assets/sound/draw.mp3'), (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+      // set volume
+      drawSound.setVolume(1.0);
+    });
+
+
+    loseSound = new Sound(require('../assets/sound/ai_win.mp3'), (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+      // set volume
+      loseSound.setVolume(1.0);
+    });
+
+    return () => {
+      clickSound.current.release(); // Release the sound on component unmount
+      winSound.release();
+      loseSound.release();
+      drawSound.release();
+    };
+  }, []); // Empty dependency array means this runs only once on mount
+
+
   const handlePostMoveLogic = (newCells) => {
     // Check if there is a winner
     const winner = checkWinner(newCells);
@@ -29,9 +88,17 @@ const Board = ({ onRestart, drawCount}) => {
       setGameOver(true); // Set game over state
 
       if (winner === 'draw') {
+        drawSound.play();
         Alert.alert("Game Over", `Draw!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
       } else {
-        Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
+        console.log(winner);
+        if (winner == 'Player') {
+          winSound.play();
+          Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
+        }else{
+          loseSound.play();
+          Alert.alert("Game Over", `${winner} wins!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
+        }
       }
     }
   };
@@ -39,6 +106,11 @@ const Board = ({ onRestart, drawCount}) => {
   const handleCellClick = (index) => {
     // Check if the cell is already occupied
     if (cells[index] === null && !gameOver) {
+      if (clickSound.current) {
+        clickSound.current.play((success) => {
+          if (!success) {console.log('Sound did not play correctly');}
+        });
+      }
       const newCells = [...cells];
       newCells[index] = currentPlayer;
       setCells(newCells);

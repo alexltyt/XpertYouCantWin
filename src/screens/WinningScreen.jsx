@@ -1,24 +1,55 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, Pressable , ImageBackground} from 'react-native';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Sound from 'react-native-sound';
 import GameResult from '../components/GameResult';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 const WinningScreen = ({navigation}) => {
+    const clickSound = useRef(null);
+
+    useEffect(() => {
+        // Initialize sound
+        clickSound.current = new Sound(require('../assets/sound/start.mp3'), (error) => {
+            if (error) {
+                console.log('Failed to load the sound', error);
+                return;
+            }
+            // loaded successfully
+            // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+            // set volume
+            clickSound.current.setVolume(1.0);
+        });
+
+        return () => {
+            clickSound.current.release(); // Release the sound on component unmount
+        };
+    },[]);
+
+    const handlePress = (destination) => {
+        // Play the click sound
+        clickSound.current.play((success) => {
+            if (!success) {
+                console.log('Sound did not play correctly');
+            }
+        });
+
+        navigation.navigate(destination);
+    }
   return (
     <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
 
     <View style={styles.bg}>
         <GameResult draw="5" timeUsed="14:05" winner="circle"/>
         <View style={styles.buttonContainer}>
-            <Pressable style={styles.buttonSize} onPress={()=>navigation.navigate('Game')}>
+            <Pressable style={styles.buttonSize} onPress={()=>handlePress('Game')}>
                 <Image
                     source={require('../assets/image/restart.png')}
                     style={styles.button}
                 />
             </Pressable>
-            <Pressable style={styles.buttonSize} onPress={()=>navigation.navigate('Home')}>
+            <Pressable style={styles.buttonSize} onPress={()=>handlePress('Home')}>
                 <Image
                     source={require('../assets/image/home.png')}
                     style={styles.button}

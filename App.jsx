@@ -6,9 +6,33 @@ import HomeScreen from './src/screens/HomeScreen';
 import WinningScreen from './src/screens/WinningScreen';
 import GameScreen from './src/screens/GameScreen';
 import { SignProvider } from './src/_util/SignContext'; // Import the SignProvider
+import { useState, useRef, useEffect } from 'react';
+import Sound from 'react-native-sound';
 
 function App() {
   const Stack = createStackNavigator();
+ 
+  const backgroundMusic = useRef(null);
+
+  useEffect(() => {
+    // Initialize sound
+    backgroundMusic.current = new Sound(require('./src/assets/sound/inGame.mp3'), (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+      // set volume
+      backgroundMusic.current.setVolume(0.7);
+      backgroundMusic.current.setNumberOfLoops(-1);
+      backgroundMusic.current.play();
+    });
+
+    return () => {
+      backgroundMusic.current.release(); // Release the sound on component unmount
+    };
+  },[]);
 
   return (
     <NavigationContainer>

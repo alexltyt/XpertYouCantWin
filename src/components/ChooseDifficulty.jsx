@@ -1,11 +1,44 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable, Alert } from 'react-native';
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
+import Sound from 'react-native-sound';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 
 const ChooseDifficulty = ({onSelect, difficulty}) => {
+    const clickSound = useRef(null);
+
+    useEffect(() => {
+        // Initialize sound
+        clickSound.current = new Sound(require('../assets/sound/pick2.mp3'), (error) => {
+            if (error) {
+                console.log('Failed to load the sound', error);
+                return;
+            }
+            // loaded successfully
+            // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+            // set volume
+            clickSound.current.setVolume(1.0);
+        });
+
+        return () => {
+            clickSound.current.release(); // Release the sound on component unmount
+        };
+    }, []); 
+
+    const handlePress = (selection) => {
+        // Play the click sound
+        clickSound.current.play((success) => {
+            if (!success) {
+                console.log('Sound did not play correctly');
+            }
+        });
+
+        onSelect(selection);
+    };
+
+    
     // const [difficulty, setDifficulty] = useState('normal');
   return (
     <View style={styles.container}>
@@ -17,7 +50,7 @@ const ChooseDifficulty = ({onSelect, difficulty}) => {
         <View style={styles.difficultyBox}>
             <Pressable 
                 style={[styles.diffcultyChoice, difficulty==='normal'?styles.selected:null]}
-                onPress={()=>onSelect('normal')}    
+                onPress={()=>handlePress('normal')}    
             >
                 <Text style={styles.text}>
                     Normal
@@ -25,7 +58,7 @@ const ChooseDifficulty = ({onSelect, difficulty}) => {
             </Pressable>
             <Pressable 
                 style={[styles.diffcultyChoice, difficulty==='xpert'?styles.selected:null]}
-                onPress={()=>onSelect('xpert')} 
+                onPress={()=>handlePress('xpert')} 
             >
                 <Text style={styles.text}>
                     Xpert
