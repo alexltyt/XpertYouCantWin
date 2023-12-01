@@ -7,7 +7,6 @@ import Sound from 'react-native-sound';
 
 
 const HomeScreen = ({navigation}) => {
-  const [difficulty, setDifficulty] = useState('xpert'); // ['normal', 'xpert']
 
   const startSound = useRef(null);
 
@@ -31,10 +30,6 @@ const HomeScreen = ({navigation}) => {
     };
   }, []);
 
-  function handleSelect(difficulty){
-    setDifficulty(difficulty);
-    console.log(difficulty);
-  };
 
   function handleStart(){
     startSound.current.play();
@@ -44,7 +39,7 @@ const HomeScreen = ({navigation}) => {
     <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
     < View style={styles.bg}>
         <ChooseSign />
-        <ChooseDifficulty onSelect={handleSelect} difficulty={difficulty}/>
+        <ChooseDifficulty/>
             <Pressable style={styles.startContainer} onPress={handleStart}>
                 <Image
                     source={require('../assets/image/start2.png')}

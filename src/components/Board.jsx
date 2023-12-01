@@ -7,9 +7,8 @@ import Sound from 'react-native-sound';
 //import { bestMove } from './gameLogic/Minimax';
 
 const Board = ({ onRestart, drawCount}) => {
-  const [currentPlayer, setCurrentPlayer] = useState('Player'); // 'Player' or 'AI'
   const [cells, setCells] = useState(Array(9).fill(null));
-  const { chosenSign } = useSign();
+  const { chosenSign, chosenDifficulty } = useSign();
   const [gameOver, setGameOver] = useState(false);
 
   // useRef to keep the sound object
@@ -17,7 +16,8 @@ const Board = ({ onRestart, drawCount}) => {
 
   //temp const set here
   // difficulty = 'normal' or 'xpert';
-  const difficulty = 'normal';
+  const difficulty = chosenDifficulty;
+  console.log('Board.jsx, difficulty:' + difficulty);
 
   useEffect(() => {
     // Reset the cells when the reset key changes
@@ -296,7 +296,6 @@ const Board = ({ onRestart, drawCount}) => {
           {renderCell(8)}
         </View>
       </View>
-      <Text style={styles.text}>{currentPlayer}'s Turn</Text>
     </View>
   );
 };

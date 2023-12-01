@@ -10,13 +10,21 @@ export const useSign = () => {
 
 export const SignProvider = ({ children }) => {
   const [chosenSign, setChosenSign] = useState('circle'); // Default to 'circle'
+  const [chosenDifficulty, setDifficulty] = useState('normal'); // Default to 'easy'
 
   const updateChosenSign = (sign) => {
     setChosenSign(sign);
   };
 
+  const updateDifficulty = (difficulty) => {
+    setDifficulty(difficulty);
+  }
+
   return (
-    <SignContext.Provider value={{ chosenSign, updateChosenSign }}>
+    <SignContext.Provider value={{ 
+      chosenSign, updateChosenSign,
+      chosenDifficulty, updateDifficulty 
+      }}>
       {children}
     </SignContext.Provider>
   );

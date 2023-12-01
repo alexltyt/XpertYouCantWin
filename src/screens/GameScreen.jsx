@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, ImageBackground, TouchableHighlight } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Sound from 'react-native-sound';
 import Board from '../components/Board';
 import PlayerContainer from '../components/PlayerContainer';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -12,7 +13,18 @@ const GameScreen = ({ navigation }) => {
   const [aiWin, setAiWin] = useState(0);
   const [drawCount, setDrawCount] = useState(0);
 
+  const clickSound = useRef(null);
+
+
   const handleRestart = (winner) => {
+
+    // Play the click sound
+    clickSound.current.play((success) => {
+      if (!success) {
+        console.log('Sound did not play correctly');
+      }
+    });
+
     setResetKey((prevKey) => prevKey + 1);
 
     // Update win count based on the winner
@@ -25,6 +37,35 @@ const GameScreen = ({ navigation }) => {
     }
     
   };
+
+  useEffect(() => {
+    // Initialize sound
+    clickSound.current = new Sound(require('../assets/sound/pick2.mp3'), (error) => {
+      if (error) {
+        console.log('Failed to load the sound', error);
+        return;
+      }
+      // loaded successfully
+      // console.log('Duration in seconds: ' + clickSound.current.getDuration());
+      // set volume
+      clickSound.current.setVolume(1.0);
+    });
+
+    return () => {
+      clickSound.current.release(); // Release the sound on component unmount
+    };
+  },[]);
+
+  const handlePress = (destination) => {
+    // Play the click sound
+    clickSound.current.play((success) => {
+        if (!success) {
+            console.log('Sound did not play correctly');
+        }
+    });
+
+    navigation.navigate(destination);
+}
 
 
   return (
@@ -42,14 +83,14 @@ const GameScreen = ({ navigation }) => {
           </TouchableHighlight>
           <TouchableHighlight
             style={styles.buttonSize}
-            onPress={() => navigation.navigate('Winning')}
+            onPress={() => handlePress('Winning')}
             underlayColor="rgba(0, 0, 0, 0.1)"
           >
             <Image source={require('../assets/image/cross1.png')} style={styles.button} />
           </TouchableHighlight>
           <TouchableHighlight
             style={styles.buttonSize}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => handlePress('Home')}
             underlayColor="rgba(0, 0, 0, 0.1)"
           >
             <Image source={require('../assets/image/home.png')} style={styles.button} />
@@ -87,7 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     gap: wp('15%'),
-    // marginTop: hp('3%'),
+    marginTop: hp('6%'),
   },
   buttonSize: {
     width: 60,
