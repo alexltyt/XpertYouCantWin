@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, Image, ImageBackground, TouchableHighlight } fr
 import { useState } from 'react';
 import Board from '../components/Board';
 import PlayerContainer from '../components/PlayerContainer';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 const GameScreen = ({ navigation }) => {
   const [resetKey, setResetKey] = useState(0);
@@ -53,16 +55,16 @@ const GameScreen = ({ navigation }) => {
             <Image source={require('../assets/image/home.png')} style={styles.button} />
           </TouchableHighlight>
         </View>
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}> */}
           {/* Add a new button to reset stats */}
-          <TouchableHighlight
+          {/* <TouchableHighlight
             style={styles.buttonSize}
             onPress={() => handleResetStats()}
             underlayColor="rgba(0, 0, 0, 0.1)"
           >
             <Text style={styles.buttonText}>Reset Stats</Text>
-          </TouchableHighlight>
-        </View>
+          </TouchableHighlight> */}
+        {/* </View> */}
       </View>
     </ImageBackground>
   );
@@ -84,13 +86,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    gap: 60,
+    gap: wp('15%'),
+    marginTop: hp('3%'),
   },
   buttonSize: {
     width: 60,
     height: 60,
     aspectRatio: 1,
-    marginTop: 20,
+    // marginTop: hp('2%'),
   },
   button: {
     flex: 1,

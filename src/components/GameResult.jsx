@@ -1,6 +1,8 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, Pressable, ImageBackground } from 'react-native';
 import { useState } from 'react';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 const GameResult = ({draw, timeUsed, winner}) => {
   return (
@@ -36,18 +38,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: hp('2%'),
   },
   title: {
       fontSize: 45,
-      margin:20,
+      margin:hp('3%'),
       fontFamily: 'Lobster-Regular',
       color: 'rgb(98, 29, 29)',
       textAlign: 'center',
   },
   text: {
       fontSize: 30,
-      margin:16,
+      margin:hp('2%'),
       fontFamily: 'Lobster-Regular',
       color: 'rgb(98, 29, 29)',
       textAlign: 'center',

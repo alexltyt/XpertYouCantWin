@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Text, Image, Pressable , ImageBackground} from 'react-native';
 import { useState } from 'react';
 import GameResult from '../components/GameResult';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 const WinningScreen = ({navigation}) => {
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
         width: 90,
         height: 90,
         aspectRatio: 1,
-        marginTop: 20,
+        marginTop: hp('2%'),
     },
     button: {
         flex: 1,

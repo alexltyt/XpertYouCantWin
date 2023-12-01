@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, Image, Pressable,ImageBackground } from 'react-
 import { useState } from 'react';
 import ChooseSign from '../components/ChooseSign';
 import ChooseDifficulty from '../components/ChooseDifficulty';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 const HomeScreen = ({navigation}) => {
   const [difficulty, setDifficulty] = useState('xpert'); // ['normal', 'xpert']
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 110,
     aspectRatio: 1,
-    marginTop: 20,
+    // marginTop: hp('5%'),
 },
   startButton: {
       flex: 1,

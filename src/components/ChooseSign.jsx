@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Pressable, Animated } from 'react-native';
 import { useSign } from '../_util/SignContext';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 const ChooseSign = () => {
   const { updateChosenSign } = useSign();
-  const [selectedSign, setSelectedSign] = useState(null);
+  const [selectedSign, setSelectedSign] = useState('circle');
   const animation = new Animated.Value(0);
 
   const handleChooseSign = (sign) => {
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   sign: {
     width: 90,
     height: 90,
-    margin: 20,
+    margin: hp('1%'),
     borderWidth: 2,
     borderColor: 'transparent',
     borderRadius: 10, // Add border radius for a rounded look
@@ -85,12 +87,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 20,
+    marginTop: hp('5%'),
+    marginBottom: hp('5%'),
   },
   title: {
     fontSize: 25,
-    margin: 10,
+    margin: hp('1%'),
     fontFamily: 'Lobster-Regular',
     color: 'rgb(98, 29, 29)',
   },

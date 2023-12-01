@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable, Alert } from 'react-native';
 import { useState } from 'react';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 
 const ChooseDifficulty = ({onSelect, difficulty}) => {
@@ -39,11 +41,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 20,
+        marginTop: hp('5%'),
     },
     text: {
         fontSize: 25,
-        margin:10,
+        margin: hp('1%'),
         fontFamily: 'Lobster-Regular',
         color: 'rgb(98, 29, 29)',
         textAlign: 'center',
@@ -52,15 +54,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 40,
-        marginBottom: 20,
+        marginTop: hp('7%'),
+        marginBottom: hp('7%'),
         
     },
     diffcultyChoice: {
         width: 120,
         borderWidth: 2,
         borderColor: 'rgb(98, 29, 29)',
-        padding: 10,
+        padding: wp('3%'),
     },
     selected: {
         backgroundColor: '#EFC8A9',

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, Alert } from 'react-native';
 import { useSign } from '../_util/SignContext'; // Import useSign
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 //import { checkWinner } from './gameLogic/CheckWinner';
 //import { bestMove } from './gameLogic/Minimax';
 
@@ -232,12 +234,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 15,
-    marginTop: 20,
+    marginTop: hp('3%'),
   },
   row: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 15,
+    gap: wp('4%'),
   },
   cell: {
     width: 100,
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 30,
-    marginTop: 30,
+    marginTop: hp('1%'),
     fontFamily: 'Lobster-Regular',
     color: 'rgb(98, 29, 29)',
     textAlign: 'center',

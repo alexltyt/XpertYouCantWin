@@ -1,6 +1,8 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, Pressable , ImageBackground} from 'react-native';
 import { useState } from 'react';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 
 const PlayerContainer = ({playerWin, aiWin}) => {
@@ -25,8 +27,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: 20,
-        gap: 50,
+        marginTop: hp('3%'),
+        gap: wp('20%'),
     },
     text: {
         fontSize: 30,
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
-        gap: 10,
+        gap: hp('1%'),
     },
     sign: {
         width: 100,
