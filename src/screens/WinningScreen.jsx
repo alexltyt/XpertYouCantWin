@@ -4,15 +4,15 @@ import { useState, useRef, useEffect } from 'react';
 import Sound from 'react-native-sound';
 import GameResult from '../components/GameResult';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { useMainContext } from '../_util/Context';
 
 const WinningScreen = ({ navigation }) => {
     const clickSound = useRef(null);
 
-    //temp params
-    const drawCount = 3;
-    const winner = 'circle';
-    const timeCount = '15:05';
+    const {drawCount, timeCount, finalWinner} = useMainContext();
+    console.log('WinningScreen.jsx, drawCount:' + drawCount);
+    console.log('WinningScreen.jsx, timeCount:' + timeCount);
+    console.log('WinningScreen.jsx, winner:' + finalWinner);
 
     useEffect(() => {
         // Initialize sound
@@ -39,14 +39,13 @@ const WinningScreen = ({ navigation }) => {
                 console.log('Sound did not play correctly');
             }
         });
-
         navigation.navigate(destination);
     }
     return (
         <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
 
             <View style={styles.bg}>
-                <GameResult draw={drawCount} timeUsed={timeCount} winner={winner} />
+                <GameResult draw={drawCount} timeUsed={timeCount} finalWinner={finalWinner} />
                 <View style={styles.buttonContainer}>
                     <Pressable style={styles.buttonSize} onPress={() => handlePress('Game')}>
                         <Image
@@ -83,10 +82,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonSize: {
-        width: 90,
-        height: 90,
+        width: hp('10%'),
+        height: hp('10%'),
         aspectRatio: 1,
-        // marginTop: hp('2%'),
+        marginTop: hp('2%'),
     },
     button: {
         flex: 1,

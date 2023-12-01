@@ -1,13 +1,13 @@
 import React, { useState, useRef,useEffect } from 'react';
 import Sound from 'react-native-sound';
 import { View, Text, Image, StyleSheet, Pressable, Animated } from 'react-native';
-import { useSign } from '../_util/SignContext';
+import { useMainContext } from '../_util/Context';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 const ChooseSign = () => {
 
-    const { updateChosenSign } = useSign();
+    const { updateChosenSign } = useMainContext();
     const [selectedSign, setSelectedSign] = useState('circle');
     const animation = new Animated.Value(0);
     const clickSound = useRef(null);
@@ -89,8 +89,8 @@ const ChooseSign = () => {
 
 const styles = StyleSheet.create({
   sign: {
-    width: 90,
-    height: 90,
+    width: hp('15%'),
+    height: hp('15%'),
     margin: hp('1%'),
     borderWidth: 2,
     borderColor: 'transparent',

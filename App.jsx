@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import WinningScreen from './src/screens/WinningScreen';
 import GameScreen from './src/screens/GameScreen';
-import { SignProvider } from './src/_util/SignContext'; // Import the SignProvider
+import { ContextProvider } from './src/_util/Context'; // Import the SignProvider
 import { useState, useRef, useEffect } from 'react';
 import Sound from 'react-native-sound';
 import Orientation from 'react-native-orientation-locker';
@@ -45,13 +45,13 @@ function App() {
 
   return (
     <NavigationContainer>
-      <SignProvider>
+      <ContextProvider>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Winning" component={WinningScreen} />
           <Stack.Screen name="Game" component={GameScreen} />
         </Stack.Navigator>
-      </SignProvider>
+      </ContextProvider>
     </NavigationContainer>
   );
 }

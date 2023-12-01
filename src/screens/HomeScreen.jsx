@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import ChooseSign from '../components/ChooseSign';
 import ChooseDifficulty from '../components/ChooseDifficulty';
 import Sound from 'react-native-sound';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 const HomeScreen = ({navigation}) => {
@@ -64,8 +65,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   startContainer: {
-    width: 250,
-    height: 110,
+    // width: hp('20%'),
+    height: hp('14%'),
     aspectRatio: 1,
     // marginTop: hp('5%'),
 },

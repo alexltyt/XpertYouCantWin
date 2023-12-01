@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, Alert } from 'react-native';
-import { useSign } from '../_util/SignContext'; // Import useSign
+import { useMainContext } from '../_util/Context'; // Import useSign
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Sound from 'react-native-sound';
 //import { checkWinner } from './gameLogic/CheckWinner';
@@ -8,7 +8,7 @@ import Sound from 'react-native-sound';
 
 const Board = ({ onRestart, drawCount}) => {
   const [cells, setCells] = useState(Array(9).fill(null));
-  const { chosenSign, chosenDifficulty } = useSign();
+  const { chosenSign, chosenDifficulty } = useMainContext();
   const [currentPlayer, setCurrentPlayer] = useState('Player');
   const [gameOver, setGameOver] = useState(false);
 
@@ -18,7 +18,7 @@ const Board = ({ onRestart, drawCount}) => {
   //temp const set here
   // difficulty = 'normal' or 'xpert';
   const difficulty = chosenDifficulty;
-  console.log('Board.jsx, difficulty:' + difficulty);
+  // console.log('Board.jsx, difficulty:' + difficulty);
 
   useEffect(() => {
     // Reset the cells when the reset key changes
@@ -47,7 +47,7 @@ const Board = ({ onRestart, drawCount}) => {
       // loaded successfully
       // console.log('Duration in seconds: ' + clickSound.current.getDuration());
       // set volume
-      winSound.setVolume(1.0);
+      winSound.setVolume(0.6);
     });
 
     drawSound = new Sound(require('../assets/sound/draw.mp3'), (error) => {
@@ -70,7 +70,7 @@ const Board = ({ onRestart, drawCount}) => {
       // loaded successfully
       // console.log('Duration in seconds: ' + clickSound.current.getDuration());
       // set volume
-      loseSound.setVolume(1.0);
+      loseSound.setVolume(0.6);
     });
 
     return () => {
@@ -83,11 +83,13 @@ const Board = ({ onRestart, drawCount}) => {
 
 
   const handlePostMoveLogic = (newCells) => {
+    console.log('Board.jsx, handlePostMoveLogic called', newCells);
     // Check if there is a winner
     const winner = checkWinner(newCells);
     if (winner !== null && !gameOver) {
-      setGameOver(true); // Set game over state
-
+      console.log('Board.jsx, entered winner if condition:' + winner);
+      setGameOver(true);
+      console.log('Board.jsx, gameover:' + gameOver);
       if (winner === 'draw') {
         drawSound.play();
         Alert.alert("Game Over", `Draw!`, [{ text: "OK", onPress: () => onRestart(winner) }]);
@@ -116,15 +118,12 @@ const Board = ({ onRestart, drawCount}) => {
       newCells[index] = currentPlayer;
       setCells(newCells);
 
-      handlePostMoveLogic(newCells); // Check for winner after player's move
+      handlePostMoveLogic(newCells);// Check for winner after player's move
 
+      console.log('Board.jsx, gameover" ' + gameOver);
       if (!gameOver) {
-        bestMove(newCells); // AI's turn
-      }
-      
-      handlePostMoveLogic(newCells); // Check for winner after AI's move
-
-      setCurrentPlayer('Player');
+        bestMove(newCells, handlePostMoveLogic); // AI's turn, with post-move logic
+    }
     }
   };
 
@@ -156,6 +155,7 @@ const Board = ({ onRestart, drawCount}) => {
 
     // Check draw
     if (!cells.includes(null) && winner === null) {
+      // console.log('Board.jsx: draw', winner);
       return "draw";
     }
 
@@ -179,23 +179,23 @@ const Board = ({ onRestart, drawCount}) => {
     };
   }
 
-  function bestMove(board) {
+  function bestMove(board, postMoveCallback) {
     let bestScore = -Infinity;
     let move;
     for (let i = 0; i < 9; i++) {
-      if (board[i] === null) {
-        board[i] = 'AI';
-        let score = minimax(board, 0, false);
-        board[i] = null;
-        if (score > bestScore) {
-          bestScore = score;
-          move = i;
+        if (board[i] === null) {
+            board[i] = 'AI';
+            let score = minimax(board, 0, false);
+            board[i] = null;
+            if (score > bestScore) {
+                bestScore = score;
+                move = i;
+            }
         }
-      }
     }
     board[move] = 'AI';
-    handlePostMoveLogic(board);
-  }
+    postMoveCallback(board); // Call the passed-in function after AI's move
+}
 
   function minimax(board, depth, isMaximizing) {
     let result = checkWinner(board);
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   board: {
     display: 'flex',
     flexDirection: 'column',
-    gap: 15,
+    gap: hp('2%'),
     marginTop: hp('3%'),
   },
   row: {
@@ -314,8 +314,8 @@ const styles = StyleSheet.create({
     gap: wp('4%'),
   },
   cell: {
-    width: 100,
-    height: 100,
+    width: hp('13%'),
+    height: hp('13%'),
     borderColor: '#EFC8A9',
     borderWidth: 3,
     borderStyle: 'solid',
@@ -323,8 +323,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sign: {
-    width: 80,
-    height: 80,
+    width: hp('10%'),
+    height: hp('10%'),
   },
   text: {
     fontSize: 30,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable, Alert } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
-import { useSign } from '../_util/SignContext';
+import { useMainContext } from '../_util/Context';
 import Sound from 'react-native-sound';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
@@ -9,7 +9,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 const ChooseDifficulty = () => {
 
-    const { updateDifficulty } = useSign();
+    const { updateDifficulty } = useMainContext();
     const [ selectedDifficulty, setSelectedDifficulty ] = useState('normal');
     const clickSound = useRef(null);
 
@@ -76,11 +76,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
-        marginTop: hp('5%'),
+        // marginTop: hp('5%'),
     },
     text: {
         fontSize: 25,
-        margin: hp('1%'),
+        // margin: hp('1%'),
         fontFamily: 'Lobster-Regular',
         color: 'rgb(98, 29, 29)',
         textAlign: 'center',

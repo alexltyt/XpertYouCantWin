@@ -4,27 +4,36 @@ import { useState } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
-const GameResult = ({draw, timeUsed, winner}) => {
+const GameResult = ({draw, timeUsed, finalWinner}) => {
   return (
 
     <View style={styles.container}>
-        <View style={styles.title}>
+
+        {finalWinner == 'Player' ? (
+          <View>
             <Text style={styles.title}>Winner!</Text>
-        </View>
-        {winner==='cross'? 
-        <View>
-          <View style={styles.winnerSignContainer}>
-            <Image source={require('../assets/image/cross1.png')} style={styles.winnerSign} />
+            <View style={styles.winnerSignContainer}>
+              <Image source={require('../assets/image/p.png')} style={styles.winnerSign} />
+            </View>
+            <Text style={styles.text}>Player</Text>
           </View>
-          <Text style={styles.text}>cross</Text>
-        </View>:
-        <View>
-          <View style={styles.winnerSignContainer}>
-            <Image source={require('../assets/image/circle.png')} style={styles.winnerSign} />
+        ) : finalWinner == 'AI' ? (
+          <View>
+            <Text style={styles.title}>Winner!</Text>
+            <View style={styles.winnerSignContainer}>
+              <Image source={require('../assets/image/ai.png')} style={styles.winnerSign} />
+            </View>
+            <Text style={styles.text}>AI</Text>
           </View>
-          <Text style={styles.text}>circle</Text>
-        </View>}
-        
+        ) : (
+          <View>
+            <Text style={styles.title}>  </Text>
+            <View style={styles.winnerSignContainer}>
+              <Image source={require('../assets/image/draw1.png')} style={styles.winnerSign} />
+            </View>
+            <Text style={styles.text}>Draw</Text>
+          </View>
+        )}
         <View>
             <Text style={styles.text}>Draw: {draw} times</Text>
             <Text style={styles.text}>Time Used: {timeUsed}</Text>

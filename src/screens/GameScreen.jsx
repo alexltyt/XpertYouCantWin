@@ -1,23 +1,43 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, ImageBackground, TouchableHighlight } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import Sound from 'react-native-sound';
 import Board from '../components/Board';
 import PlayerContainer from '../components/PlayerContainer';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useMainContext } from '../_util/Context';
 
 
 const GameScreen = ({ navigation }) => {
-  const [resetKey, setResetKey] = useState(0);
+  // const [resetKey, setResetKey] = useState(0);
   const [playerWin, setPlayerWin] = useState(0);
   const [aiWin, setAiWin] = useState(0);
   const [drawCount, setDrawCount] = useState(0);
   const [timeCount, setTimeCount] = useState(0);
-  const [finalWinner, setFinalWinner] = useState('');
+  const [finalWinner, setFinalWinner] = useState('draw');
+
+  // reset drawCount, timeCount, finalWinner when the game restarts
+  useFocusEffect(
+    React.useCallback(() => {
+      setDrawCount(0);
+      setTimeCount(0);
+      setPlayerWin(0);
+      setAiWin(0);
+      setFinalWinner('draw');
+  
+      return () => {
+        // Any cleanup code if necessary
+      };
+    }, [])
+  );
 
   const clickSound = useRef(null);
   const startTime = useRef(null);
   const endTime = useRef(null);
+
+  const { updateDrawCount, updateTimeCount, updateFinalWinner } = useMainContext();
+  
 
 
 
@@ -30,7 +50,7 @@ const GameScreen = ({ navigation }) => {
       }
     });
 
-    setResetKey((prevKey) => prevKey + 1);
+    // setResetKey((prevKey) => prevKey + 1);
 
     // Update win count based on the winner
     if (winner === 'Player') {
@@ -85,12 +105,17 @@ const GameScreen = ({ navigation }) => {
       endTime.current = new Date();
       const timeDifferent = endTime.current - startTime.current;
       setTimeCount(formatTime(timeDifferent));
+      updateTimeCount(formatTime(timeDifferent));
+      updateDrawCount(drawCount);
       if (playerWin > aiWin) {
         setFinalWinner('Player');
+        updateFinalWinner('Player');
       } else if (playerWin < aiWin) {
         setFinalWinner('AI');
+        updateFinalWinner('AI');
       } else {
         setFinalWinner('draw');
+        updateFinalWinner('draw');
       }
     }
 
@@ -115,7 +140,7 @@ const GameScreen = ({ navigation }) => {
     <ImageBackground source={require('../assets/image/wall.png')} resizeMode="cover" style={styles.wall}>
       <View style={styles.bg}>
         <PlayerContainer playerWin={playerWin} aiWin={aiWin} />
-        <Board key={resetKey} onRestart={(winner) => handleRestart(winner)} drawCount={drawCount} />
+        <Board onRestart={(winner) => handleRestart(winner)} drawCount={drawCount} />
         <View style={styles.buttonContainer}>
           <TouchableHighlight
             style={styles.buttonSize}
@@ -129,7 +154,7 @@ const GameScreen = ({ navigation }) => {
             onPress={() => handlePress('Winning')}
             underlayColor="rgba(0, 0, 0, 0.1)"
           >
-            <Image source={require('../assets/image/cross1.png')} style={styles.button} />
+            <Image source={require('../assets/image/endGame2.png')} style={styles.button} />
           </TouchableHighlight>
           <TouchableHighlight
             style={styles.buttonSize}
